@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: g_scores
+      POSTGRES_USER: g_scores
+      POSTGRES_PASSWORD: g_scores
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U g_scores -d g_scores']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  be:
+    build:
+      context: ./be
+    environment:
+      DATABASE_URL: postgresql://g_scores:g_scores@postgres:5432/g_scores?schema=public
+      PORT: 3000
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./be:/app
+      - be_node_modules:/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c 'npm ci && npm run prisma:generate && npm run start:dev'
+
+  fe:
+    build:
+      context: ./fe
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./fe:/app
+      - fe_node_modules:/app/node_modules
+    depends_on:
+      - be
+    command: sh -c 'npm ci && npm run dev -- --host 0.0.0.0'
+
+volumes:
+  postgres_data:
+  be_node_modules:
+  fe_node_modules:
