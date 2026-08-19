@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnvironment } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
-import { ScoresModule } from './scores/scores.module';
+import { ScoresModule } from './route/scores/scores.module';
 
 @Module({
   imports: [
