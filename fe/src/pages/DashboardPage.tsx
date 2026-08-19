@@ -1,90 +1,152 @@
 import { useState } from 'react';
-import { GraduationCap } from 'lucide-react';
+import { 
+  GraduationCap, 
+  LayoutDashboard, 
+  BarChart2,  
+  ArrowRight
+} from 'lucide-react';
 import SearchForm from '../features/search/SearchForm';
 import ScoreResult from '../features/search/ScoreResult';
-import type { ScoreResponseDto } from '../types';
+import StatisticsChart from '../features/statistics/StatisticsChart';
+import LeaderboardTable from '../features/leaderboard/LeaderboardTable';
+import type { ScoreResponseDto, StatisticResponseDto, TopGroupAResponseDto } from '../types';
 
 export default function DashboardPage() {
-
   const [scoreResult, setScoreResult] = useState<ScoreResponseDto | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // States cho thống kê & top 10 (Chờ coder nối API)
+  const [statsData, setStatsData] = useState<StatisticResponseDto[]>([]);
+  const [top10Data, setTop10Data] = useState<TopGroupAResponseDto[]>([]);
+  const [isStatsLoading, setIsStatsLoading] = useState(false);
+  const [isTop10Loading, setIsTop10Loading] = useState(false);
+
   const handleSearch = async (sbd: string) => {
-    
-    console.log('User đang tìm SBD:', sbd);
     setIsLoading(true);
-    
-  
     setTimeout(() => {
       setIsLoading(false);
-    
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">G-Scores</h1>
+    <div className="flex h-screen bg-[#F8F9FA] font-sans overflow-hidden">
+      
+      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex z-20">
+        <div className="h-16 flex items-center px-6 gap-3">
+          <div className="bg-black p-1.5 rounded-lg">
+            <GraduationCap className="h-6 w-6 text-white" />
           </div>
-          <div className="text-sm text-gray-500 font-medium hidden sm:block">
-            Kỳ thi THPT Quốc Gia 2024
+          <div>
+            <h1 className="text-lg font-bold text-gray-900 leading-tight">G-Scores</h1>
+            <p className="text-[10px] text-gray-400 font-semibold tracking-wider uppercase">Dashboard</p>
           </div>
         </div>
-      </header>
 
-      {/* Main Layout */}
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-12">
+        <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
+          <div>
+            <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Overview</div>
+            <div className="space-y-1">
+              <MenuItem icon={<LayoutDashboard />} label="Dashboard" isActive={true} onClick={() => {}} />
+            </div>
+          </div>
+        </nav>
+
+        <div className="p-4 border-t border-gray-100">
+          <div className="flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors">
+            <div className="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white font-semibold text-sm">
+              AD
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-gray-900">Admin</p>
+              <p className="text-xs text-gray-500">G-Scores System</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+      </aside>
+
+      <main className="flex-1 flex flex-col h-screen overflow-hidden">
         
-        {/* Section 1: Search Form */}
-        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10">
-          <div className="max-w-2xl mx-auto text-center space-y-2 mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Tra cứu điểm thi</h2>
-            <p className="text-gray-500">Nhập chính xác 8 số báo danh của bạn để xem kết quả</p>
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6 z-10 justify-end">
+          <div className="text-sm font-medium text-gray-500">
+            Kỳ thi THPT Quốc Gia 2024
           </div>
-          
-          <SearchForm 
-            onSearch={handleSearch} 
-            isLoading={isLoading} 
-            errorMsg={errorMsg} 
-          />
-          
-          {scoreResult && <ScoreResult scoreData={scoreResult} />}
-        </section>
+        </header>
 
-        {/* Section 2: Dashboard */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* Left Column: Statistics Chart */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
-              Phổ điểm các môn
-            </h3>
-          
-            <div className="h-80 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-400">
-              [Bar Chart Placeholder]
+        <div className="flex-1 overflow-y-auto p-6 md:p-8 scroll-smooth">
+          <div className="max-w-[1400px] mx-auto space-y-6">
+            
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+              <p className="text-sm text-gray-500 mt-1">Hệ thống tra cứu và thống kê điểm thi THPT Quốc Gia 2024.</p>
             </div>
-          </div>
 
-         
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-red-500 rounded-full"></span>
-              Top 10 Khối A
-            </h3>
-           
-            <div className="h-80 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-400">
-              [Leaderboard Table Placeholder]
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              
+              <div className="xl:col-span-2 space-y-6">
+                
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="mb-6 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">Tra cứu điểm thi</h3>
+                      <p className="text-sm text-gray-500">Nhập số báo danh để xem chi tiết điểm</p>
+                    </div>
+                  </div>
+                  
+                  <SearchForm onSearch={handleSearch} isLoading={isLoading} errorMsg={errorMsg} />
+                  {scoreResult && (
+                    <div className="mt-6">
+                      <ScoreResult scoreData={scoreResult} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="mb-6 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">Phổ điểm các môn</h3>
+                      <p className="text-sm text-gray-500">Thống kê theo 4 mức độ điểm</p>
+                    </div>
+                  </div>
+                  
+                  <StatisticsChart data={statsData} isLoading={isStatsLoading} />
+                </div>
+
+              </div>
+
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-gray-900">Top 10 Khối A</h3>
+                    <p className="text-sm text-gray-500">Danh sách thủ khoa toàn quốc</p>
+                  </div>
+                  
+                  <LeaderboardTable data={top10Data} isLoading={isTop10Loading} />
+                </div>
+              </div>
+
             </div>
-          </div>
 
-        </section>
+          </div>
+        </div>
       </main>
     </div>
+  );
+}
+
+function MenuItem({ icon, label, isActive, onClick }: { icon: React.ReactNode, label: string, isActive: boolean, onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors font-medium text-sm ${
+        isActive 
+          ? 'bg-gray-100 text-gray-900' 
+          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+      }`}
+    >
+      <span className={isActive ? 'text-gray-900' : 'text-gray-400'}>{icon}</span>
+      <span>{label}</span>
+    </button>
   );
 }
