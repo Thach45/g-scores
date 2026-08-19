@@ -126,8 +126,8 @@ function parseOptions(argv: string[]): ImportOptions {
   }
 
   const batchSize = Number(optionValue('--batch-size') ?? DEFAULT_BATCH_SIZE);
-  if (!Number.isInteger(batchSize) || batchSize < 1 || batchSize > 10_000) {
-    throw new Error('--batch-size must be an integer from 1 to 10000');
+  if (!Number.isInteger(batchSize) || batchSize < 1 || batchSize > 500_000) {
+    throw new Error('--batch-size must be an integer from 1 to 500_000');
   }
 
   return {
