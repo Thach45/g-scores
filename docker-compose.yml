@@ -30,7 +30,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c 'npm ci && npm run prisma:generate && npm run start:dev'
+    command: sh -c 'npm ci && npm run prisma:deploy && npm run db:import && npm run start:dev'
 
   fe:
     build:
