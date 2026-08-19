@@ -6,7 +6,7 @@ import type {
   ApiResponse
 } from "../types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/scores";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1/scores";
 
 export const apiClient = axios.create({
   baseURL: API_URL,

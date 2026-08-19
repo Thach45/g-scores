@@ -1,16 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StatisticResponseDto } from 'src/route/scores/dto/statistic.response.dto';
-import { ScoreResponseDto } from 'src/route/scores/dto/score.response.dto';
 import { TopGroupAResponseDto } from 'src/route/scores/dto/top-a.response.dto';
 
 @Injectable()
 export class ScoresService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByRegistrationNumber(
-    sbd: string,
-  ): Promise<ScoreResponseDto | null> {
+  async findByRegistrationNumber(sbd: string) {
     const score = await this.prisma.examScore.findUnique({
       where: { sbd },
     });

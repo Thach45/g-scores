@@ -1,40 +1,49 @@
-import { Decimal } from '@prisma/client/runtime/client';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
 export class ScoreResponseDto {
   @Expose()
   sbd: string;
-  @Expose()
-  toan: Decimal | null;
-  @Expose()
-  nguVan: Decimal | null;
-  @Expose()
-  ngoaiNgu: Decimal | null;
 
   @Expose()
-  vatLi: Decimal | null;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  toan: number | null;
 
   @Expose()
-  hoaHoc: Decimal | null;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  nguVan: number | null;
 
   @Expose()
-  sinhHoc: Decimal | null;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  ngoaiNgu: number | null;
 
   @Expose()
-  lichSu: Decimal | null;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  vatLi: number | null;
 
   @Expose()
-  diaLi: Decimal | null;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  hoaHoc: number | null;
 
   @Expose()
-  gdcd: Decimal | null;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  sinhHoc: number | null;
 
-  // Ví dụ giấu mã ngoại ngữ (N1, N2...) đi, không cho Frontend thấy
+  @Expose()
+  @Transform(({ value }) => (value ? Number(value) : null))
+  lichSu: number | null;
+
+  @Expose()
+  @Transform(({ value }) => (value ? Number(value) : null))
+  diaLi: number | null;
+
+  @Expose()
+  @Transform(({ value }) => (value ? Number(value) : null))
+  gdcd: number | null;
+
   @Exclude()
   maNgoaiNgu: string | null;
 
-  // Constructor để tự động map dữ liệu từ Database vào class này
-  constructor(partial: Partial<ScoreResponseDto>) {
+  constructor(partial: any) {
     Object.assign(this, partial);
   }
 }

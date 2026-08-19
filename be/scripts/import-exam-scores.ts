@@ -156,6 +156,17 @@ async function importExamScores(options: ImportOptions): Promise<void> {
   const prisma = new PrismaClient({
     adapter: new PrismaPg({ connectionString: databaseUrl }),
   });
+  
+  try {
+    const count = await prisma.examScore.count();
+    if (count > 0) {
+      console.info('Database already contains exam scores. Skipping import.');
+      return;
+    }
+  } catch (error) {
+    console.error('Failed to check database, continuing with import...', error);
+  }
+
   const parser = createReadStream(options.filePath).pipe(
     parse({
       bom: true,

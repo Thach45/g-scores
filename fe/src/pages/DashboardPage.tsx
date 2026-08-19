@@ -1,33 +1,18 @@
-import { useState } from 'react';
 import { 
   GraduationCap, 
   LayoutDashboard, 
-  BarChart2,  
   ArrowRight
 } from 'lucide-react';
 import SearchForm from '../features/search/SearchForm';
 import ScoreResult from '../features/search/ScoreResult';
 import StatisticsChart from '../features/statistics/StatisticsChart';
 import LeaderboardTable from '../features/leaderboard/LeaderboardTable';
-import type { ScoreResponseDto, StatisticResponseDto, TopGroupAResponseDto } from '../types';
+import { useDashboardData } from '../hooks/useDashboardData';
+import { useScoreSearch } from '../hooks/useScoreSearch';
 
 export default function DashboardPage() {
-  const [scoreResult, setScoreResult] = useState<ScoreResponseDto | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // States cho thống kê & top 10 (Chờ coder nối API)
-  const [statsData, setStatsData] = useState<StatisticResponseDto[]>([]);
-  const [top10Data, setTop10Data] = useState<TopGroupAResponseDto[]>([]);
-  const [isStatsLoading, setIsStatsLoading] = useState(false);
-  const [isTop10Loading, setIsTop10Loading] = useState(false);
-
-  const handleSearch = async (sbd: string) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
+  const { scoreResult, errorMsg, isLoading, handleSearch } = useScoreSearch();
+  const { statsData, top10Data, isStatsLoading, isTop10Loading } = useDashboardData();
 
   return (
     <div className="flex h-screen bg-[#F8F9FA] font-sans overflow-hidden">
