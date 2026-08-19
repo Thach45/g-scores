@@ -6,7 +6,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { EXAM_SUBJECTS } from '../src/constants/subjects';
 
-const DEFAULT_BATCH_SIZE = 1_000;
+const DEFAULT_BATCH_SIZE = 200_000;
 type CsvRecord = Record<string, string | undefined>;
 type ExamScoreInput = {
   sbd: string;
