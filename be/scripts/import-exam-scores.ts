@@ -4,21 +4,9 @@ import { parse } from 'csv-parse';
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
+import { EXAM_SUBJECTS } from '../src/constants/subjects';
 
 const DEFAULT_BATCH_SIZE = 1_000;
-const SCORE_COLUMNS = [
-  'toan',
-  'ngu_van',
-  'ngoai_ngu',
-  'vat_li',
-  'hoa_hoc',
-  'sinh_hoc',
-  'lich_su',
-  'dia_li',
-  'gdcd',
-] as const;
-
-type ScoreColumn = (typeof SCORE_COLUMNS)[number];
 type CsvRecord = Record<string, string | undefined>;
 type ExamScoreInput = {
   sbd: string;
@@ -52,34 +40,40 @@ class ExamScoreCsvMapper {
   map(record: CsvRecord, line: number): ExamScoreInput {
     const sbd = record.sbd?.trim() ?? '';
     if (!/^\d{8}$/.test(sbd)) {
-      throw new CsvRowValidationError(line, 'sbd must contain exactly 8 digits');
+      throw new CsvRowValidationError(
+        line,
+        'sbd must contain exactly 8 digits',
+      );
     }
 
-    const scores = Object.fromEntries(
-      SCORE_COLUMNS.map((column) => [
-        column,
-        this.parseScore(record[column], column, line),
-      ]),
-    ) as Record<ScoreColumn, string | null>;
-
-    return {
+    const input: ExamScoreInput = {
       sbd,
-      toan: scores.toan,
-      nguVan: scores.ngu_van,
-      ngoaiNgu: scores.ngoai_ngu,
-      vatLi: scores.vat_li,
-      hoaHoc: scores.hoa_hoc,
-      sinhHoc: scores.sinh_hoc,
-      lichSu: scores.lich_su,
-      diaLi: scores.dia_li,
-      gdcd: scores.gdcd,
+      toan: null,
+      nguVan: null,
+      ngoaiNgu: null,
+      vatLi: null,
+      hoaHoc: null,
+      sinhHoc: null,
+      lichSu: null,
+      diaLi: null,
+      gdcd: null,
       maNgoaiNgu: this.parseForeignLanguageCode(record.ma_ngoai_ngu, line),
     };
+
+    for (const sub of EXAM_SUBJECTS) {
+      (input as Record<string, string | null>)[sub.dtoKey] = this.parseScore(
+        record[sub.dbColumn],
+        sub.dbColumn,
+        line,
+      );
+    }
+
+    return input;
   }
 
   private parseScore(
     rawValue: string | undefined,
-    column: ScoreColumn,
+    column: string,
     line: number,
   ): string | null {
     const value = rawValue?.trim() ?? '';
@@ -156,7 +150,7 @@ async function importExamScores(options: ImportOptions): Promise<void> {
   const prisma = new PrismaClient({
     adapter: new PrismaPg({ connectionString: databaseUrl }),
   });
-  
+
   try {
     const count = await prisma.examScore.count();
     if (count > 0) {

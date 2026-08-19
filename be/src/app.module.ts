@@ -6,6 +6,8 @@ import { validateEnvironment } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
 import { ScoresModule } from './route/scores/scores.module';
 
+import { CacheModule } from '@nestjs/cache-manager';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -13,6 +15,7 @@ import { ScoresModule } from './route/scores/scores.module';
       cache: true,
       validate: validateEnvironment,
     }),
+    CacheModule.register({ isGlobal: true, ttl: 0 }),
     PrismaModule,
     ScoresModule,
   ],

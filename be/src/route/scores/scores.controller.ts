@@ -11,12 +11,13 @@ import { TransformInterceptor } from 'src/shared/interceptors/transform.intercep
 import { ScoreResponseDto } from 'src/route/scores/dto/score.response.dto';
 import { StatisticResponseDto } from 'src/route/scores/dto/statistic.response.dto';
 import { TopGroupAResponseDto } from 'src/route/scores/dto/top-a.response.dto';
-
+import { CacheInterceptor } from '@nestjs/cache-manager';
 @Controller('scores')
 @UseInterceptors(TransformInterceptor, ClassSerializerInterceptor)
 export class ScoresController {
   constructor(private readonly scoresService: ScoresService) {}
   @Get('statistics')
+  @UseInterceptors(CacheInterceptor)
   async findStatistics() {
     const results = await this.scoresService.findStatistics();
     return results.map(
@@ -25,6 +26,7 @@ export class ScoresController {
   }
 
   @Get('top-a')
+  @UseInterceptors(CacheInterceptor)
   async findTopGroupA() {
     const results = await this.scoresService.findTopGroupA();
     return results.map(

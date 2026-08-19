@@ -1,3 +1,4 @@
+import { EXAM_SUBJECTS } from '../../constants/subjects';
 import type { ScoreResponseDto } from '../../types';
 
 interface ScoreResultProps {
@@ -12,15 +13,13 @@ export default function ScoreResult({ scoreData }: ScoreResultProps) {
         <p className="text-green-600 font-medium text-lg">SBD: {scoreData.sbd}</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <ScoreBox label="Toán" score={scoreData.toan} />
-        <ScoreBox label="Ngữ Văn" score={scoreData.nguVan} />
-        <ScoreBox label="Ngoại Ngữ" score={scoreData.ngoaiNgu} />
-        <ScoreBox label="Vật Lí" score={scoreData.vatLi} />
-        <ScoreBox label="Hóa Học" score={scoreData.hoaHoc} />
-        <ScoreBox label="Sinh Học" score={scoreData.sinhHoc} />
-        <ScoreBox label="Lịch Sử" score={scoreData.lichSu} />
-        <ScoreBox label="Địa Lí" score={scoreData.diaLi} />
-        <ScoreBox label="GDCD" score={scoreData.gdcd} />
+        {EXAM_SUBJECTS.map((subject) => (
+          <ScoreBox
+            key={subject.dtoKey}
+            label={subject.label}
+            score={scoreData[subject.dtoKey as keyof typeof scoreData] as number | null}
+          />
+        ))}
       </div>
     </div>
   );

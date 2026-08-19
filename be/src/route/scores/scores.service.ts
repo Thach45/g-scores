@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StatisticResponseDto } from 'src/route/scores/dto/statistic.response.dto';
 import { TopGroupAResponseDto } from 'src/route/scores/dto/top-a.response.dto';
-
+import { EXAM_SUBJECTS } from '../../constants/subjects';
 @Injectable()
 export class ScoresService {
   constructor(private readonly prisma: PrismaService) {}
@@ -22,7 +22,12 @@ export class ScoresService {
   }
 
   async findStatistics() {
-    const results = await this.prisma.$queryRaw<StatisticResponseDto[]>`
+    const unionQueries = EXAM_SUBJECTS.map(
+      (sub) =>
+        `SELECT '${sub.dbColumn}' as subject, ${sub.dbColumn} as score FROM exam_scores WHERE ${sub.dbColumn} IS NOT NULL`,
+    ).join(' UNION ALL ');
+
+    const results = await this.prisma.$queryRawUnsafe<StatisticResponseDto[]>(`
       SELECT
         subject as "subject",
         COUNT(CASE WHEN score >= 8 THEN 1 END)::int AS "level1",
@@ -30,29 +35,14 @@ export class ScoresService {
         COUNT(CASE WHEN score >= 4 AND score < 6 THEN 1 END)::int AS "level3",
         COUNT(CASE WHEN score < 4 THEN 1 END)::int AS "level4"
       FROM (
-        SELECT 'toan' as subject, toan as score FROM exam_scores WHERE toan IS NOT NULL
-        UNION ALL
-        SELECT 'nguVan', ngu_van FROM exam_scores WHERE ngu_van IS NOT NULL
-        UNION ALL
-        SELECT 'ngoaiNgu', ngoai_ngu FROM exam_scores WHERE ngoai_ngu IS NOT NULL
-        UNION ALL
-        SELECT 'vatLi', vat_li FROM exam_scores WHERE vat_li IS NOT NULL
-        UNION ALL
-        SELECT 'hoaHoc', hoa_hoc FROM exam_scores WHERE hoa_hoc IS NOT NULL
-        UNION ALL
-        SELECT 'sinhHoc', sinh_hoc FROM exam_scores WHERE sinh_hoc IS NOT NULL
-        UNION ALL
-        SELECT 'lichSu', lich_su FROM exam_scores WHERE lich_su IS NOT NULL
-        UNION ALL
-        SELECT 'diaLi', dia_li FROM exam_scores WHERE dia_li IS NOT NULL
-        UNION ALL
-        SELECT 'gdcd', gdcd FROM exam_scores WHERE gdcd IS NOT NULL
-
+        ${unionQueries}
       ) AS subject_scores
       GROUP BY subject;
-    `;
+    `);
 
-    return results;
+    return results.map(
+      (item: StatisticResponseDto) => new StatisticResponseDto(item),
+    );
   }
 
   async findTopGroupA() {
