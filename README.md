@@ -480,21 +480,6 @@ Dự án chưa có số liệu benchmark hay kiểm thử tải chính thức. V
 
 ## Kiểm thử
 
-### Lệnh có sẵn
-
-```bash
-# Backend
-cd be
-npm test
-npm run test:e2e
-npm run build
-
-# Frontend
-cd ../fe
-npm run lint
-npm run build
-```
-
 ### Kịch bản kiểm thử thủ công
 
 - Tra cứu một SBD có trong database và kiểm tra điểm từng môn.
@@ -526,7 +511,7 @@ npm run build
 - [x] Docker Compose khởi chạy đầy đủ database, backend và frontend.
 - [x] Kiểm tra dữ liệu ở biểu mẫu, API và importer.
 - [x] Cache báo cáo tổng hợp.
-- [ ] Triển khai bản chạy công khai.
+- [x] Triển khai bản chạy công khai.
 
 ## Triển khai
 
