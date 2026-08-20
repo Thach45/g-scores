@@ -9,6 +9,7 @@ export interface ScoreResponseDto {
   lichSu: number | null;
   diaLi: number | null;
   gdcd: number | null;
+  maNgoaiNgu: string | null;
 }
 
 export interface StatisticResponseDto {

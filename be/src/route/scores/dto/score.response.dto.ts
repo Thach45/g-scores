@@ -40,7 +40,7 @@ export class ScoreResponseDto {
   @Transform(({ value }) => (value ? Number(value) : null))
   gdcd: number | null;
 
-  @Exclude()
+  @Expose()
   maNgoaiNgu: string | null;
 
   constructor(partial: any) {

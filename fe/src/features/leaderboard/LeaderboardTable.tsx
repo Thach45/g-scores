@@ -31,6 +31,9 @@ export default function LeaderboardTable({ data, isLoading }: LeaderboardTablePr
             <tr>
               <th className="px-4 py-3 font-semibold rounded-tl-lg">Hạng</th>
               <th className="px-4 py-3 font-semibold">Số báo danh</th>
+              <th className="px-4 py-3 font-semibold text-right">Toán</th>
+              <th className="px-4 py-3 font-semibold text-right">Lý</th>
+              <th className="px-4 py-3 font-semibold text-right">Hóa</th>
               <th className="px-4 py-3 font-semibold text-right rounded-tr-lg">Tổng điểm</th>
             </tr>
           </thead>
@@ -46,6 +49,9 @@ export default function LeaderboardTable({ data, isLoading }: LeaderboardTablePr
                   </div>
                 </td>
                 <td className="px-4 py-3 font-medium text-gray-900">{student.sbd}</td>
+                <td className="px-4 py-3 text-right text-gray-600">{Number(student.toan).toFixed(2)}</td>
+                <td className="px-4 py-3 text-right text-gray-600">{Number(student.vat_li).toFixed(2)}</td>
+                <td className="px-4 py-3 text-right text-gray-600">{Number(student.hoa_hoc).toFixed(2)}</td>
                 <td className="px-4 py-3 font-bold text-blue-600 text-right">
                   {Number(student.total_score).toFixed(2)}
                 </td>

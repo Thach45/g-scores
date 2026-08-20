@@ -16,7 +16,7 @@ export default function ScoreResult({ scoreData }: ScoreResultProps) {
         {EXAM_SUBJECTS.map((subject) => (
           <ScoreBox
             key={subject.dtoKey}
-            label={subject.label}
+            label={subject.dtoKey === 'ngoaiNgu' && scoreData.maNgoaiNgu ? `${subject.label} (${scoreData.maNgoaiNgu})` : subject.label}
             score={scoreData[subject.dtoKey as keyof typeof scoreData] as number | null}
           />
         ))}

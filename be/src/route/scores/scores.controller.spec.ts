@@ -58,6 +58,8 @@ describe('ScoresController', () => {
 
       const result = await controller.findStatistics();
       expect(result).toEqual(expectedResult);
+      /* eslint-disable @typescript-eslint/unbound-method */
+
       expect(service.findStatistics).toHaveBeenCalledTimes(1);
     });
   });
