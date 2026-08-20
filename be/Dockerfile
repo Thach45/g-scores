@@ -15,5 +15,5 @@ RUN npm run build
 
 EXPOSE 3000
 
-# Chạy db:import ngầm (background) bằng ký tự '&' để lách luật 60 giây của Render
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && (npm run db:import &) && npm run start:prod"]
+# Migration và import dữ liệu phải chạy như release/one-off job riêng.
+CMD ["npm", "run", "start:prod"]

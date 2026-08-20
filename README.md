@@ -520,6 +520,14 @@ Dự án chưa có số liệu benchmark hay kiểm thử tải chính thức. V
 | Frontend | [fe-ten-ivory.vercel.app](https://fe-ten-ivory.vercel.app/) |
 | Backend API | [g-scores-backend-1ivh.onrender.com/api/v1/scores](https://g-scores-backend-1ivh.onrender.com/api/v1/scores) |
 
+### Quy trình triển khai
+
+1. Tạo PostgreSQL production và cấu hình `DATABASE_URL`.
+2. Từ môi trường development, chạy Prisma migration và import `diem_thi.csv` vào database production.
+3. Deploy backend NestJS lên Render, sử dụng cùng `DATABASE_URL`.
+4. Deploy frontend React lên Vercel, đặt `VITE_API_URL` trỏ đến backend trên Render.
+5. Cập nhật `FRONTEND_URL` trên Render bằng domain Vercel để cấu hình CORS.
+
 Khi triển khai một môi trường mới, cần cấu hình tối thiểu:
 
 - Backend: `DATABASE_URL`, `PORT`, `FRONTEND_URL`.
