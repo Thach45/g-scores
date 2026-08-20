@@ -151,11 +151,17 @@ async function importExamScores(options: ImportOptions): Promise<void> {
     adapter: new PrismaPg({ connectionString: databaseUrl }),
   });
 
+  let existingCount = 0;
   try {
-    const count = await prisma.examScore.count();
-    if (count > 0) {
-      console.info('Database already contains exam scores. Skipping import.');
+    existingCount = await prisma.examScore.count();
+    if (existingCount >= 1000000) {
+      console.info('Database is already fully populated. Skipping import.');
       return;
+    }
+    if (existingCount > 0) {
+      console.info(
+        `Found ${existingCount.toLocaleString()} existing records. Fast-forwarding and resuming import...`,
+      );
     }
   } catch (error) {
     console.error('Failed to check database, continuing with import...', error);
@@ -172,12 +178,18 @@ async function importExamScores(options: ImportOptions): Promise<void> {
 
   let batch: ExamScoreInput[] = [];
   let imported = 0;
-  let line = 1;
+  let fileLine = 1;
+  let dataRowIndex = 0;
 
   try {
     for await (const rawRecord of parser) {
-      line += 1;
-      batch.push(mapper.map(rawRecord as CsvRecord, line));
+      fileLine += 1;
+      dataRowIndex += 1;
+      if (dataRowIndex <= existingCount) {
+        continue;
+      }
+
+      batch.push(mapper.map(rawRecord as CsvRecord, fileLine));
 
       if (batch.length === options.batchSize) {
         await writeBatch(prisma, batch);
