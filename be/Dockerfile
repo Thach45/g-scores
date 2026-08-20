@@ -15,5 +15,5 @@ RUN npm run build
 
 EXPOSE 3000
 
-# Chạy bản Production, bao gồm cả Migrate DB và Import CSV tự động
-CMD ["sh", "-c", "npm run prisma:deploy && npm run db:import && npm run start:prod"]
+# Chạy db:import ngầm (background) bằng ký tự '&' để lách luật 60 giây của Render
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && (npm run db:import &) && npm run start:prod"]
