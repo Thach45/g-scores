@@ -15,7 +15,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "db:import": "tsx scripts/import-exam-scores.ts --file dataset/diem_thi_thpt_2024.csv",
+    "db:import": "tsx scripts/import-exam-scores.ts --file dataset/diem_thi.csv",
     "db:import:file": "tsx scripts/import-exam-scores.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

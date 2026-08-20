@@ -8,10 +8,10 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import  type{ StatisticResponseDto } from '../../types';
+import type { StatisticChartData } from '../../types';
 
 interface StatisticsChartProps {
-  data: StatisticResponseDto[];
+  data: StatisticChartData[];
   isLoading?: boolean;
 }
 
@@ -46,7 +46,7 @@ export default function StatisticsChart({ data, isLoading }: StatisticsChartProp
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
           <XAxis 
-            dataKey="subject" 
+            dataKey="label" 
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#6B7280', fontSize: 12 }}

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StatisticResponseDto } from 'src/route/scores/dto/statistic.response.dto';
 import { TopGroupAResponseDto } from 'src/route/scores/dto/top-a.response.dto';
-import { EXAM_SUBJECTS } from '../../constants/subjects';
+import { EXAM_SUBJECTS } from '../../domain/subject';
 @Injectable()
 export class ScoresService {
   constructor(private readonly prisma: PrismaService) {}
@@ -23,8 +23,11 @@ export class ScoresService {
 
   async findStatistics() {
     const unionQueries = EXAM_SUBJECTS.map(
-      (sub) =>
-        `SELECT '${sub.dbColumn}' as subject, ${sub.dbColumn} as score FROM exam_scores WHERE ${sub.dbColumn} IS NOT NULL`,
+      (subject) => `
+        SELECT '${subject.dbColumn}' as subject, ${subject.dbColumn} as score
+        FROM exam_scores
+        WHERE ${subject.dbColumn} IS NOT NULL
+      `,
     ).join(' UNION ALL ');
 
     const results = await this.prisma.$queryRawUnsafe<StatisticResponseDto[]>(`
