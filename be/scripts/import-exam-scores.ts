@@ -81,7 +81,7 @@ function validateCsvHeaders(headers: string[]): string[] {
   return normalizedHeaders;
 }
 
-class ExamScoreCsvMapper {
+export class ExamScoreCsvMapper {
   constructor(private readonly subjects: Subject[]) {}
 
   map(record: CsvRecord, line: number): ExamScoreInput {
@@ -190,7 +190,7 @@ class ExamScoreRepository {
   }
 }
 
-class ExamScoreCsvImporter {
+export class ExamScoreCsvImporter {
   constructor(
     private readonly mapper: ExamScoreCsvMapper,
     private readonly repository: ExamScoreRepository,
@@ -335,17 +335,19 @@ async function bootstrap(): Promise<void> {
   }
 }
 
-void bootstrap().catch((error: unknown) => {
-  if (
-    error instanceof CsvRowValidationError ||
-    error instanceof CsvHeaderValidationError
-  ) {
-    console.error(`Invalid CSV data: ${error.message}`);
-  } else if (error instanceof Error) {
-    console.error(error.message);
-  } else {
-    console.error('Unexpected import error:', error);
-  }
+if (require.main === module) {
+  void bootstrap().catch((error: unknown) => {
+    if (
+      error instanceof CsvRowValidationError ||
+      error instanceof CsvHeaderValidationError
+    ) {
+      console.error(`Invalid CSV data: ${error.message}`);
+    } else if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error('Unexpected import error:', error);
+    }
 
-  process.exitCode = 1;
-});
+    process.exitCode = 1;
+  });
+}

@@ -12,7 +12,14 @@ import { useScoreSearch } from '../hooks/useScoreSearch';
 
 export default function DashboardPage() {
   const { scoreResult, errorMsg, isLoading, handleSearch } = useScoreSearch();
-  const { statsData, top10Data, isStatsLoading, isTop10Loading } = useDashboardData();
+  const {
+    statsData,
+    top10Data,
+    isStatsLoading,
+    isTop10Loading,
+    errorMsg: dashboardError,
+    refetch,
+  } = useDashboardData();
 
   return (
     <div className="flex h-screen bg-[#F8F9FA] font-sans overflow-hidden">
@@ -66,6 +73,19 @@ export default function DashboardPage() {
               <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
               <p className="text-sm text-gray-500 mt-1">Hệ thống tra cứu và thống kê điểm thi THPT Quốc Gia 2024.</p>
             </div>
+
+            {dashboardError && (
+              <div className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm font-medium">{dashboardError}</p>
+                <button
+                  type="button"
+                  onClick={() => void refetch()}
+                  className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+                >
+                  Thử lại
+                </button>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               

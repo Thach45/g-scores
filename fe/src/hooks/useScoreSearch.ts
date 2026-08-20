@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { getScoreBySbd } from '../services/api';
 import type { ScoreResponseDto } from '../types';
 
@@ -15,8 +16,8 @@ export function useScoreSearch() {
     try {
       const data = await getScoreBySbd(sbd);
       setScoreResult(data);
-    } catch (error: any) {
-      if (error.response?.status === 404) {
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
         setErrorMsg('Không tìm thấy dữ liệu cho số báo danh này.');
       } else {
         setErrorMsg('Đã có lỗi xảy ra từ máy chủ. Vui lòng thử lại sau.');

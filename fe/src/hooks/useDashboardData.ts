@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getStatistics, getTopGroupA } from '../services/api';
 import { EXAM_SUBJECTS } from '../constants/subjects';
 import type {
@@ -26,27 +26,39 @@ export function useDashboardData() {
   const [top10Data, setTop10Data] = useState<TopGroupAResponseDto[]>([]);
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [isTop10Loading, setIsTop10Loading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const [stats, top10] = await Promise.all([
-          getStatistics(),
-          getTopGroupA()
-        ]);
-        
-        setStatsData(formatStatisticsForChart(stats));
-        setTop10Data(top10);
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu Dashboard:", error);
-      } finally {
-        setIsStatsLoading(false);
-        setIsTop10Loading(false);
-      }
-    };
+  const fetchDashboardData = useCallback(async () => {
+    setIsStatsLoading(true);
+    setIsTop10Loading(true);
+    setErrorMsg(null);
 
-    fetchDashboardData();
+    try {
+      const [stats, top10] = await Promise.all([
+        getStatistics(),
+        getTopGroupA(),
+      ]);
+
+      setStatsData(formatStatisticsForChart(stats));
+      setTop10Data(top10);
+    } catch {
+      setErrorMsg('Không thể tải dữ liệu dashboard. Vui lòng thử lại.');
+    } finally {
+      setIsStatsLoading(false);
+      setIsTop10Loading(false);
+    }
   }, []);
 
-  return { statsData, top10Data, isStatsLoading, isTop10Loading };
+  useEffect(() => {
+    void Promise.resolve().then(fetchDashboardData);
+  }, [fetchDashboardData]);
+
+  return {
+    statsData,
+    top10Data,
+    isStatsLoading,
+    isTop10Loading,
+    errorMsg,
+    refetch: fetchDashboardData,
+  };
 }
