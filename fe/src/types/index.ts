@@ -13,7 +13,6 @@ export interface ScoreResponseDto {
 }
 
 export interface StatisticResponseDto {
-  /** Tên cột được backend trả về, ví dụ: "ngu_van". */
   subject: string;
   level1: number;
   level2: number;
@@ -22,7 +21,6 @@ export interface StatisticResponseDto {
 }
 
 export interface StatisticChartData extends StatisticResponseDto {
-  /** Nhãn hiển thị trên biểu đồ, ví dụ: "Ngữ Văn". */
   label: string;
 }
 
@@ -34,7 +32,6 @@ export interface TopGroupAResponseDto {
   total_score: number;
 }
 
-// Wrapper format từ TransformInterceptor backend
 export interface ApiResponse<T> {
   statusCode: number;
   message: string;

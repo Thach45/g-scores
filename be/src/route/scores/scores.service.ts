@@ -61,7 +61,7 @@ export class ScoresService {
         (toan + vat_li + hoa_hoc) as total_score
       FROM exam_scores
       WHERE toan IS NOT NULL AND vat_li IS NOT NULL AND hoa_hoc IS NOT NULL
-      ORDER BY total_score DESC
+      ORDER BY total_score DESC, sbd ASC
       LIMIT 10;
     `;
     return results;

@@ -466,6 +466,7 @@ Mỗi phần tử trả về gồm `sbd`, `toan`, `vat_li`, `hoa_hoc` và `total
 | SBD trùng khi import lại | Bản ghi trùng được bỏ qua |
 | Điểm đúng bằng 4, 6, 8 | Thuộc lần lượt nhóm `4–<6`, `6–<8`, `>=8` |
 | Thiếu một trong ba điểm khối A | Không xuất hiện trong Top 10 |
+| Thí sinh đồng tổng điểm ở Top 10 | Sắp xếp ưu tiên theo SBD tăng dần để kết quả luôn nhất quán (deterministic) |
 
 ## Hiệu năng
 
@@ -476,7 +477,6 @@ Các tối ưu hiện có trong mã nguồn:
 - **Tổng hợp trong database:** `COUNT` có điều kiện, phép cộng và sắp xếp thực hiện tại PostgreSQL.
 - **Cache trong bộ nhớ:** endpoint phổ điểm và Top 10 dùng cache manager của NestJS.
 
-Dự án chưa có số liệu benchmark hay kiểm thử tải chính thức. Vì vậy, README không đưa ra cam kết về độ trễ hoặc số lượng người dùng đồng thời.
 
 ## Kiểm thử
 
